@@ -1,0 +1,3 @@
+public/demos/** linguist-vendored
+public/projects/** linguist-vendored
+*.svg linguist-vendored
