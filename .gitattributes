@@ -1,3 +1,6 @@
-public/demos/** linguist-vendored
-public/projects/** linguist-vendored
-*.svg linguist-vendored
+*.html linguist-detectable=false
+*.css linguist-detectable=false
+
+public/* linguist-vendored=true
+public/**/* linguist-vendored=true
+*.svg linguist-vendored=true
