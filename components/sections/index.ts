@@ -1,0 +1,8 @@
+export { HeroSection } from './HeroSection'
+export { ProfileCard } from './ProfileCard'
+export { TechMarquee } from './TechMarquee'
+export { TimelineSection } from './TimelineSection'
+export { PrinciplesSection } from './PrinciplesSection'
+export { PortfolioSection } from './PortfolioSection'
+export { ContactSection } from './ContactSection'
+export { FooterSection } from './FooterSection'

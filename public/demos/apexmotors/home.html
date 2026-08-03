@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexMotors - Автосервіс</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23f43f5e'><path d='M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2zM3.732 3.732a.5.5 0 0 1 .707 0l.895.894a.5.5 0 1 1-.707.708l-.894-.895a.5.5 0 0 1 0-.707zM2 8a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8zm.732 4.268a.5.5 0 0 1 0-.707l.894-.895a.5.5 0 1 1 .707.707l-.895.895a.5.5 0 0 1-.707 0zm11.268 0a.5.5 0 0 1-.707 0l-.895-.895a.5.5 0 1 1 .707-.707l.895.895a.5.5 0 0 1 0 .707zM12 8a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12.5A.5.5 0 0 1 12 8zm-1.268-4.268a.5.5 0 0 1 0 .707l-.895.894a.5.5 0 1 1-.707-.708l.894-.894a.5.5 0 0 1 .707 0z'/></svg>">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Підключення стилів через відносний шлях -->
+    <link rel="stylesheet" href="./css/home.css">
+    
+    <style>
+        /* Примусово робимо поля темними */
+        .custom-dark-input {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+            border: 1px solid #334155 !important;
+            border-radius: 8px !important;
+        }
+        .custom-dark-input:focus {
+            background-color: #1e293b !important;
+            color: #ffffff !important;
+            border-color: #f43f5e !important;
+            box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.25) !important;
+        }
+        .custom-dark-input option {
+            background-color: #0f172a !important;
+            color: #ffffff !important;
+        }
+        
+        /* Стиль рожевого цінника */
+        .price-badge-fly {
+            position: absolute;
+            right: 0;
+            top: -5px;
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
+            color: white !important;
+            padding: 4px 12px;
+            border-radius: 10px 10px 0 10px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: none;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
+            animation: popInBadge 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        /* Ключові кадри для плавної анімації */
+        @keyframes popInBadge {
+            0% { opacity: 0; transform: translateY(10px) scale(0.8); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-scroll-line" id="scrollLine" aria-hidden="true"></div>
+    <div class="bg-lines" aria-hidden="true"></div>
+    <div class="bg-circles" id="bgCircles" aria-hidden="true">
+        <div class="circle-red"></div>
+        <div class="circle-orange"></div>
+    </div>
+
+    <nav class="top-menu fixed-top" id="mainNav" aria-label="Головне меню">
+        <div class="container d-flex justify-content-between align-items-center">
+            
+            <a class="logo-main" href="#" data-aos="fade-down" data-aos-duration="1000">
+                <i class="bi bi-speedometer2" aria-hidden="true"></i> ApexMotors
+            </a>
+            
+            <div class="d-none d-lg-flex align-items-center gap-4" data-aos="fade-down" data-aos-duration="1000" data-aos-delay="200">
+                <div class="d-flex align-items-center">
+                    <a href="#services" class="menu-link mb-0">Послуги</a>
+                    <a href="#contacts" class="menu-link mb-0">Контакти</a>
+                </div>
+                
+                <div class="text-end border-start border-secondary border-opacity-50 ps-4">
+                    <a href="tel:+380999999999" class="text-white fw-bold fs-5 text-decoration-none d-block lh-1 hover-opacity">
+                        +38 (099) 999-99-99
+                    </a>
+                    <span id="work-status-badge" class="text-success small fw-bold d-flex align-items-center justify-content-end mt-1" style="font-size: 0.75rem;">
+                        <span id="work-status-icon" class="me-2" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: currentColor; animation: pulse-green 2s infinite;"></span>
+                        <span id="work-status-text">Зараз працюємо</span>
+                    </span>
+                </div>
+                
+                <a href="#" class="btn-login ms-2">
+                    <i class="bi bi-fingerprint me-2 fs-5" aria-hidden="true"></i> Вхід
+                </a>
+            </div>
+
+            <button class="d-lg-none btn text-white fs-2 p-0 border-0" type="button" aria-label="Відкрити меню">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        <header class="first-screen">
+            <div class="container">
+                <div class="row align-items-center">
+                    
+                    <div class="col-lg-6 mb-5 mb-lg-0 text-center text-lg-start">
+                        <div data-aos="fade-right" data-aos-duration="1000">
+                            <div style="display: inline-block; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.3); color: #f43f5e; padding: 8px 24px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; margin-bottom: 1.8rem; white-space: nowrap; letter-spacing: 0.5px;">
+                                <i class="bi bi-lightning-charge-fill me-2" aria-hidden="true"></i>Преміум Автосервіс
+                            </div>
+                            <h1 class="main-heading">Еталонний догляд за вашим <br><span class="color-text">автомобілем</span></h1>
+                            <p class="sub-heading">Ми не просто ремонтуємо машини. Ми відновлюємо заводські характеристики, використовуючи інженерний підхід та сучасну телеметрію.</p>
+                            <div class="mt-5">
+                                <button data-bs-toggle="modal" data-bs-target="#bookingModal" class="btn-red">Записатись на СТО</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-5 offset-lg-1 d-none d-lg-block">
+                        <div data-aos="zoom-out-left" data-aos-duration="1500" data-aos-delay="300">
+                            <aside class="diag-card" id="card3d" aria-label="Переваги системи">
+                                <div class="d-flex justify-content-between mb-4 border-bottom border-secondary border-opacity-50 pb-3">
+                                    <span class="fw-bold text-white text-uppercase small"><i class="bi bi-gear-wide-connected me-2" aria-hidden="true"></i> Apex CRM System</span>
+                                    <i class="bi bi-record-circle-fill text-danger" style="animation: pulse-icon 2s infinite; border-radius: 50%;" aria-hidden="true"></i>
+                                </div>
+                                <div class="diag-item">
+                                    <i class="bi bi-calendar-check text-danger" aria-hidden="true"></i>
+                                    <div>
+                                        <div class="item-name">Запис без черг</div>
+                                        <div class="item-desc">Смарт-календар гарантує, що майстер та бокс будуть вільні саме на ваш час.</div>
+                                    </div>
+                                </div>
+                                <div class="diag-item">
+                                    <i class="bi bi-boxes text-danger" aria-hidden="true"></i>
+                                    <div>
+                                        <div class="item-name">Швидкий ремонт</div>
+                                        <div class="item-desc">Власний склад запчастин та зручна система обліку виключають будь-які затримки.</div>
+                                    </div>
+                                </div>
+                                <div class="diag-item border-0 mb-0 pb-0">
+                                    <i class="bi bi-receipt text-danger" aria-hidden="true"></i>
+                                    <div>
+                                        <div class="item-name">Прозора звітність</div>
+                                        <div class="item-desc">Надаємо детальний друкований Акт виконаних робіт із зафіксованою сумою.</div>
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+
+        <section class="numbers-section" aria-label="Наша статистика">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-md-4 mb-4 mb-md-0" data-aos="fade-up" data-aos-duration="1000">
+                        <div class="number-val"><span class="counter" data-target="15">0</span></div>
+                        <div class="number-label">Років експертизи</div>
+                    </div>
+                    <div class="col-md-4 mb-4 mb-md-0" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+                        <div class="number-val"><span class="counter" data-target="8500">0</span>+</div>
+                        <div class="number-label">Задоволених клієнтів</div>
+                    </div>
+                    <div class="col-md-4" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
+                        <div class="number-val"><span class="counter" data-target="6">0</span></div>
+                        <div class="number-label">Високотехнологічних постів</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="container mb-5 pb-5" aria-labelledby="services-title">
+            <h2 id="services-title" class="block-title" data-aos="fade-down">Повний спектр <span class="color-text">послуг</span></h2>
+            <div class="row g-4">
+                <article class="col-md-6 col-lg-3" data-aos="flip-left" data-aos-duration="1000">
+                    <div class="card-service">
+                        <i class="bi bi-ev-front service-icon" aria-hidden="true"></i>
+                        <h3 class="service-title">Ремонт двигуна</h3>
+                        <p class="service-desc">Високоточний капітальний ремонт ДВЗ, заміна ланцюгів ГРМ, усунення будь-яких проблем.</p>
+                    </div>
+                </article>
+                <article class="col-md-6 col-lg-3" data-aos="flip-left" data-aos-duration="1000" data-aos-delay="150">
+                    <div class="card-service">
+                        <i class="bi bi-bezier service-icon" aria-hidden="true"></i>
+                        <h3 class="service-title">Ходова частина</h3>
+                        <p class="service-desc">3D розвал-сходження, заміна амортизаторів, сайлентблоків. Повна діагностика на вібростенді.</p>
+                    </div>
+                </article>
+                <article class="col-md-6 col-lg-3" data-aos="flip-left" data-aos-duration="1000" data-aos-delay="300">
+                    <div class="card-service">
+                        <i class="bi bi-motherboard service-icon" aria-hidden="true"></i>
+                        <h3 class="service-title">Автоелектрика</h3>
+                        <p class="service-desc">Глибока комп'ютерна діагностика дилерським ПЗ, ремонт блоків керування, чіп-тюнінг.</p>
+                    </div>
+                </article>
+                <article class="col-md-6 col-lg-3" data-aos="flip-left" data-aos-duration="1000" data-aos-delay="450">
+                    <div class="card-service">
+                        <i class="bi bi-droplet-half service-icon" aria-hidden="true"></i>
+                        <h3 class="service-title">Регламентне ТО</h3>
+                        <p class="service-desc">Заміна мастила апаратним методом у двигуні та АКПП. Використовуємо лише оригінальні рідини.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <section class="trust-section py-5" data-aos="fade-up" data-aos-duration="1000">
+        <div class="container">
+            <h2 class="block-title mb-5" style="font-size: 2.5rem;">МИ ВИКОРИСТОВУЄМО <span class="color-text">НАЙКРАЩЕ</span></h2>
+            <div class="d-flex flex-wrap justify-content-center align-items-center gap-4 gap-md-5 brand-logos">
+                <div class="d-flex flex-wrap justify-content-center align-items-center gap-4 gap-md-5 brand-logos">
+                    <div class="brand-item">
+                        <img src="./img/brands/shell.svg" alt="Shell" class="brand-img">
+                    </div>
+                    <div class="brand-item">
+                        <img src="./img/brands/motul.svg" alt="Motul" class="brand-img">
+                    </div>
+                    <div class="brand-item">
+                        <img src="./img/brands/bosch.svg" alt="Bosch" class="brand-img">
+                    </div>
+                    <div class="brand-item">
+                        <img src="./img/brands/mobil.svg" alt="Mobil" class="brand-img">
+                    </div>
+                    <div class="brand-item">
+                        <img src="./img/brands/liquimoly.svg" alt="Liqui Moly" class="brand-img">
+                    </div>
+                    <div class="brand-item">
+                        <img src="./img/brands/brembo.svg" alt="Brembo" class="brand-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contacts" class="site-footer">
+        <div class="container text-center">
+            <div class="row text-start justify-content-center">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <a href="#" class="logo-main mb-3 text-white">
+                        <i class="bi bi-speedometer2 text-danger me-2" aria-hidden="true"></i> ApexMotors
+                    </a>
+                    <p class="text-light opacity-75">Професійний автосервіс нового покоління. Якість, підтверджена роками роботи та тисячами клієнтів.</p>
+                </div>
+                <div class="col-md-4 offset-md-1">
+                    <h5 class="text-white fw-bold mb-3">Контакти</h5>
+                    <address>
+                        <p class="mb-2 text-light opacity-75"><i class="bi bi-geo-alt-fill text-danger me-2" aria-hidden="true"></i> м. Шептицький, вул. Шептицького, 1</p>
+                        <p class="mb-2 text-light opacity-75"><i class="bi bi-telephone-fill text-danger me-2" aria-hidden="true"></i> <a href="tel:+380999999999" class="text-light text-decoration-none">+38 (099) 999-99-99</a></p>
+                        <p class="mb-2 text-light opacity-75"><i class="bi bi-clock-fill text-danger me-2" aria-hidden="true"></i> Пн-Сб: 08:00 - 20:00</p>
+                    </address>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div>
+                <p class="mb-1 text-white fw-bold">&copy; 2026 СТО "ApexMotors". Всі права захищено.</p>
+                <p class="small text-light opacity-50 mb-0">Будь-яке копіювання чи використання матеріалів сайту дозволено лише за письмової згоди правовласників.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="background: rgba(15, 23, 42, 0.95); -webkit-backdrop-filter: blur(25px); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 24px;">
+                <div class="modal-header border-bottom border-secondary border-opacity-25 p-4">
+                    <h5 class="modal-title text-white fw-bold" id="bookingModalLabel">
+                        <i class="bi bi-calendar2-check-fill text-danger me-2" aria-hidden="true"></i>Залишити заявку на СТО
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Закрити"></button>
+                </div>
+                
+                <div class="modal-body p-4">
+                    <form id="bookingForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label for="bookName" class="form-label text-light opacity-75 small fw-bold text-uppercase">Як до вас звертатись?</label>
+                                <input type="text" id="bookName" class="form-control text-white shadow-none" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="bookPlate" class="form-label text-light opacity-75 small fw-bold text-uppercase">Номер авто</label>
+                                <input type="text" id="bookPlate" class="form-control text-white shadow-none" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); text-transform: uppercase;" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label for="bookPhone" class="form-label text-light opacity-75 small fw-bold text-uppercase">Телефон</label>
+                                <input type="tel" id="bookPhone" class="form-control text-white shadow-none" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);" required>
+                            </div>
+                            <div class="col-6">
+                                <label for="bookMessenger" class="form-label text-light opacity-75 small fw-bold text-uppercase">Телеграм / Viber</label>
+                                <input type="text" id="bookMessenger" class="form-control text-white shadow-none" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 position-relative mt-2">
+                            <label class="form-label text-light opacity-75 small fw-bold text-uppercase">Оберіть послугу</label>
+                            
+                            <div id="flying-price" class="price-badge-fly">
+                                <i class="bi bi-tag-fill me-1"></i><span id="flying-price-val">0</span> грн
+                            </div>
+                            
+                            <select class="form-select custom-dark-input shadow-none" id="book-service" onchange="showPriceBadge(this)" required>
+                                <option value="" selected disabled>Оберіть послугу...</option>
+                                <option value="1" data-price="800">Комп'ютерна діагностика</option>
+                                <option value="2" data-price="1200">3D Розвал-сходження</option>
+                                <option value="3" data-price="600">Заміна мастила та фільтрів</option>
+                                <option value="4" data-price="15000">Капітальний ремонт ДВЗ</option>
+                                <option value="5" data-price="2500">Ремонт ходової частини</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-light opacity-75 small fw-bold text-uppercase">Додаткові побажання</label>
+                            <textarea id="book-problem" class="form-control custom-dark-input shadow-none" rows="3" placeholder="Напишіть деталі (необов'язково)..."></textarea>
+                        </div>
+                        
+                        <div id="successMessage" class="alert alert-success d-none border-0 bg-success bg-opacity-10 text-success fw-bold" role="status">
+                            <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i> Заявку успішно відправлено! Менеджер зв'яжеться з вами.
+                        </div>
+                        
+                        <button type="submit" id="submitBtn" class="btn-red w-100 py-3 mt-2" style="border-radius: 12px; border: none;">
+                            <i class="bi bi-send-fill me-2" aria-hidden="true"></i> Відправити заявку
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="./js/home.js"></script>
+
+    <script>
+        // Функція відображення цінника при виборі послуги
+        function showPriceBadge(selectObj) {
+            const badge = document.getElementById('flying-price');
+            const valSpan = document.getElementById('flying-price-val');
+            const option = selectObj.options[selectObj.selectedIndex];
+            const price = option.getAttribute('data-price');
+            
+            if (price && price !== "0") {
+                valSpan.innerText = price;
+                badge.style.display = 'inline-block';
+
+                // Магія для повторного підстрибування цінника
+                badge.style.animation = 'none'; // Скидаємо анімацію
+                badge.offsetHeight; // Примушуємо браузер "перемалювати" елемент
+                badge.style.animation = 'popInBadge 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'; // Запускаємо знову
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Очищення форми при закритті модального вікна
+        document.addEventListener("DOMContentLoaded", function() {
+            const modalEl = document.getElementById('bookingModal');
+            if (modalEl) {
+                modalEl.addEventListener('hidden.bs.modal', function () {
+                    // Ховаємо цінник
+                    document.getElementById('flying-price').style.display = 'none';
+                    // Повністю очищаємо всі поля форми
+                    document.getElementById('bookingForm').reset();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

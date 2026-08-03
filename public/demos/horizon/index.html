@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Horizon: Pro Edition with Quiz</title>
+    <style>
+        /* ===== Глобальні змінні ===== */
+        :root {
+            --bg-main: #0a0b10;
+            --bg-card: #181a25;
+            --primary: #5c67ff;
+            --primary-hover: #4a54e8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text-main: #ffffff;
+            --text-muted: #8b92a5;
+            --nav-bg: rgba(17, 19, 28, 0.85);
+        }
+
+        /* ===== Скидання та загальні стилі ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Trebuchet MS', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(rgba(10, 11, 16, 0.65), rgba(10, 11, 16, 0.9)),
+                url('https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=1920&q=80') center/cover no-repeat fixed;
+            color: var(--text-main);
+        }
+
+        /* ===== Навігація ===== */
+        #top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: var(--nav-bg);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            cursor: pointer;
+        }
+        .logo span {
+            background: var(--primary);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text-main);
+        }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-profile {
+            width: 35px;
+            height: 35px;
+            background: #2a2d3e;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+        }
+
+        /* ===== Дашборд ===== */
+        #dashboard {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 60px);
+            background: rgba(10, 11, 16, 0.4);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            display: flex;
+            padding: 40px;
+            gap: 30px;
+            overflow-y: auto;
+            z-index: 500;
+        }
+        .main-column {
+            flex: 2;
+        }
+        .stats-column {
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        /* Карти на дашборді */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .map-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .map-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .card-img {
+            height: 140px;
+            background-size: cover;
+            background-position: center;
+        }
+        .img-world {
+            background-image: url('https://images.unsplash.com/photo-1526772662000-3f88f10405ff?w=600&q=80');
+        }
+        .img-europe {
+            background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80');
+        }
+        .img-ukraine {
+            background-image: url('https://images.unsplash.com/photo-1563603444437-d7d82eb110eb?w=600&q=80');
+        }
+        .img-lviv {
+            background-image: url('https://images.unsplash.com/photo-1589553416260-f586c8f1514f?w=600&q=80');
+        }
+        .img-custom {
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+        }
+        .card-content {
+            padding: 20px;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+        .card-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Панель статистики */
+        .stats-panel {
+            background: rgba(24, 26, 37, 0.8);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--success);
+        }
+
+        /* ===== Ігровий екран ===== */
+        #game-screen {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        #pano {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        #map-container {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 320px;
+            height: 240px;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            z-index: 10;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border: 4px solid white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #map-container:hover:not(.full-screen):not(.expanded) {
+            width: 500px;
+            height: 380px;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        #map-expand-hint {
+            display: none;
+        }
+        #map-close-btn {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.55);
+            color: white;
+            border: none;
+            font-size: 15px;
+            z-index: 20;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+        #map-container.expanded #map-close-btn {
+            display: flex;
+        }
+
+        #map-container.full-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border-radius: 0;
+            border: none;
+            z-index: 800;
+        }
+
+        /* HUD (інтерфейс гри) */
+        #hud {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            width: 300px;
+            background: rgba(24, 26, 37, 0.95);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 28px;
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .hud-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+        .val {
+            font-size: 14px;
+            font-weight: 800;
+            color: white;
+        }
+        #score-display {
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            margin: 5px 0 20px 0;
+        }
+        .game-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        #guess-btn {
+            background: var(--primary);
+            color: white;
+        }
+        #guess-btn:hover {
+            background: var(--primary-hover);
+        }
+        #next-btn {
+            background: var(--success);
+            color: white;
+            display: none;
+        }
+
+        /* Кастомний режим (своя територія) */
+        #custom-ui {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 900;
+            display: none;
+            pointer-events: none;
+        }
+        #custom-header {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(24, 26, 37, 0.9);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 100px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 90%;
+        }
+        #confirm-area-btn {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 20px 60px;
+            border-radius: 100px;
+            border: none;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            pointer-events: auto;
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4);
+            font-family: inherit;
+        }
+
+        /* ===== Екран Quiz ===== */
+        #quiz-screen {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 60px);
+            background: rgba(31, 34, 53, 0.85);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 500;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .quiz-category-container {
+            text-align: center;
+            max-width: 800px;
+            width: 90%;
+        }
+        .quiz-cat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .quiz-cat-card {
+            background: rgba(24, 26, 37, 0.9);
+            padding: 25px 15px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 700;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        .quiz-cat-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            background: #2a2d3e;
+            box-shadow: 0 15px 35px rgba(92, 103, 255, 0.2);
+        }
+
+        .quiz-active-container {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 30px;
+            width: 600px;
+            max-width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+        #quiz-timer-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 6px;
+            background: var(--success);
+            width: 100%;
+            transition: width 0.1s linear;
+        }
+        #quiz-question-text {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+        #quiz-question-img {
+            max-height: 180px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .quiz-opt-btn {
+            background: #2a2d3e;
+            color: white;
+            border: 2px solid transparent;
+            padding: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .quiz-opt-btn:hover:not(:disabled) {
+            background: #363a4f;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .quiz-opt-btn.correct {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--success);
+            color: var(--success);
+        }
+        .quiz-opt-btn.wrong {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        .quiz-stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+        #quiz-lives-label {
+            font-size: 20px;
+            letter-spacing: 5px;
+        }
+
+        /* ===== Фінальний екран ===== */
+        .overlay-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 11, 16, 0.9);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .result-card {
+            background: var(--bg-card);
+            padding: 50px;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .history-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 15px;
+        }
+
+        /* ===== Завантажувальний оверлей ===== */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0b10;
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #2a2d3e;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== Медіа-запити для адаптивності мобільних пристроїв ===== */
+        @media (max-width: 768px) {
+            #top-nav {
+                padding: 0 12px;
+                height: 52px;
+            }
+            .nav-left {
+                gap: 12px;
+            }
+            .logo {
+                font-size: 15px;
+            }
+            .nav-links a {
+                font-size: 12px;
+            }
+            #dashboard {
+                top: 52px;
+                height: calc(100% - 52px);
+                flex-direction: column;
+                padding: 15px;
+                gap: 20px;
+            }
+            .stats-column {
+                min-width: 100%;
+                max-width: 100%;
+            }
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            #quiz-screen {
+                top: 52px;
+                height: calc(100% - 52px);
+                padding: 15px;
+                justify-content: flex-start;
+            }
+            .quiz-active-container {
+                padding: 20px 15px;
+                width: 100%;
+            }
+            #quiz-question-text {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+            .quiz-options {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .quiz-opt-btn {
+                padding: 14px;
+                font-size: 15px;
+            }
+
+            /* --- Компактний HUD внизу екрана --- */
+            #hud {
+                bottom: 12px;
+                left: 12px;
+                right: 12px;
+                width: auto;
+                padding: 12px 16px;
+                border-radius: 20px;
+                z-index: 20;
+            }
+            .hud-header {
+                margin-bottom: 6px;
+                padding-bottom: 6px;
+            }
+            #score-display {
+                font-size: 16px;
+                margin: 2px 0 10px 0;
+            }
+            .game-btn {
+                padding: 14px;
+                font-size: 15px;
+                border-radius: 12px;
+            }
+
+            /* --- Широка зручна карта НАД панеллю HUD --- */
+            #map-container {
+                bottom: 145px;
+                left: 12px;
+                right: 12px;
+                width: auto;
+                height: 230px;
+                border: 2px solid white;
+                border-radius: 18px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+                z-index: 15;
+            }
+            #map-container:hover:not(.full-screen) {
+                width: auto;
+                height: 230px;
+            }
+            #map-expand-hint {
+                display: flex;
+                position: absolute;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.15);
+                color: white;
+                font-size: 11px;
+                font-weight: 700;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 8px;
+                z-index: 15;
+                cursor: pointer;
+            }
+            #map-container.expanded {
+                top: 80px;
+                left: 12px;
+                right: 12px;
+                bottom: 195px;
+                width: auto;
+                height: auto;
+                border-radius: 24px;
+                z-index: 50;
+            }
+            #map-container.expanded #map-expand-hint {
+                display: none;
+                pointer-events: none;
+            }
+
+            /* --- Модальні вікна --- */
+            .result-card {
+                padding: 25px 18px;
+            }
+            #custom-header {
+                font-size: 13px;
+                padding: 10px 18px;
+                top: 65px;
+                width: 90%;
+            }
+            #confirm-area-btn {
+                padding: 14px 28px;
+                font-size: 15px;
+                bottom: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Завантажувальний оверлей -->
+    <div id="loading-overlay">
+        <div class="loader"></div>
+        <p style="margin-top:20px; font-weight:600;" id="loading-status">Завантаження...</p>
+    </div>
+
+    <!-- Навігація -->
+    <nav id="top-nav">
+        <div class="nav-left">
+            <div class="logo" onclick="openDashboard()">HORIZON <span>PRO</span></div>
+            <div class="nav-links">
+                <a id="nav-classic" class="active" onclick="openDashboard()">Classic Maps</a>
+                <a id="nav-quiz" onclick="openQuiz()">Quiz 🎁</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div style="font-weight:800; font-size:14px;">🏆 Бали: <span id="nav-highscore">0</span></div>
+            <div class="user-profile">😎</div>
+        </div>
+    </nav>
+
+    <!-- Дашборд -->
+    <div id="dashboard">
+        <div class="main-column">
+            <h2>Рекомендовані карти</h2>
+            <div class="cards-grid">
+                <div class="map-card" onclick="initGame('world')">
+                    <div class="card-img img-world"></div>
+                    <div class="card-content">
+                        <div class="card-title">Весь Світ</div>
+                        <div class="card-desc">Подорожуй всією планетою.</div>
+                    </div>
+                </div>
+                <div class="map-card" onclick="initGame('europe')">
+                    <div class="card-img img-europe"></div>
+                    <div class="card-content">
+                        <div class="card-title">Європа</div>
+                        <div class="card-desc">Від Лісабона до Києва.</div>
+                    </div>
+                </div>
+                <div class="map-card" onclick="initGame('ukraine')">
+                    <div class="card-img img-ukraine"></div>
+                    <div class="card-content">
+                        <div class="card-title">Україна</div>
+                        <div class="card-desc">Рідні дороги та пейзажі.</div>
+                    </div>
+                </div>
+                <div class="map-card" onclick="initGame('lviv')">
+                    <div class="card-img img-lviv"></div>
+                    <div class="card-content">
+                        <div class="card-title">Львівщина</div>
+                        <div class="card-desc">Досліджуй область.</div>
+                    </div>
+                </div>
+                <div class="map-card" onclick="enterCustomMode()">
+                    <div class="card-img img-custom">🎯</div>
+                    <div class="card-content">
+                        <div class="card-title">Своя територія</div>
+                        <div class="card-desc">Виділи зону на карті самостійно.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="stats-column">
+            <h2>Ваша статистика</h2>
+            <div class="stats-panel">
+                <div class="stat-row">
+                    <div class="stat-label">Найкращий результат</div>
+                    <div class="stat-value" id="stat-high-score">0</div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-label">Зіграно ігор</div>
+                    <div class="stat-value" id="stat-games-played" style="color:white;">0</div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-label">Quiz Бали</div>
+                    <div class="stat-value" id="stat-quiz-score" style="color:var(--primary);">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Екран Quiz -->
+    <div id="quiz-screen">
+        <!-- Головне меню квізу -->
+        <div class="quiz-category-container" id="quiz-category-container">
+            <h2 style="font-size:38px; margin-bottom:10px;">Режим "Виживання"</h2>
+            <p style="color:var(--text-muted); font-size:16px;">
+                Обери категорію. У тебе є <b style="color:var(--danger)">3 життя</b> та обмежений час на відповідь.<br>
+                Грай, поки не втратиш усі серця!
+            </p>
+            <div class="quiz-cat-grid">
+                <div class="quiz-cat-card" onclick="showFlagCategories()">Прапори 🏳️</div>
+                <div class="quiz-cat-card" onclick="startQuizSurvival('Авто-Мета 🚗')">Авто-Мета 🚗</div>
+                <div class="quiz-cat-card" onclick="startQuizSurvival('Столиці 🏛️')">Столиці 🏛️</div>
+            </div>
+        </div>
+
+        <!-- Підменю вибору прапорів -->
+        <div class="quiz-category-container" id="quiz-flag-categories-container" style="display: none;">
+            <h2 style="font-size:38px; margin-bottom:10px;">Обери регіон прапорів</h2>
+            <p style="color:var(--text-muted); font-size:16px;">Вибери, де саме будемо вгадувати прапори!</p>
+            <div class="quiz-cat-grid">
+                <div class="quiz-cat-card" onclick="startQuizSurvival('Всесвітні прапори 🌍')">🌍 Всесвітні прапори</div>
+                <div class="quiz-cat-card" onclick="startQuizSurvival('Європа 🇪🇺')">🇪🇺 Європа</div>
+                <div class="quiz-cat-card" onclick="startQuizSurvival('Азія 🌏')">🌏 Азія</div>
+                <div class="quiz-cat-card" onclick="startQuizSurvival('Африка 🌍')">🌍 Африка</div>
+            </div>
+            <div style="margin-top: 30px;">
+                <button class="game-btn" onclick="backToMainQuiz()" style="background:#2a2d3e; max-width: 200px; margin: 0 auto;">Назад</button>
+            </div>
+        </div>
+
+        <div class="quiz-active-container" id="quiz-active-container">
+            <div id="quiz-timer-bar"></div>
+            <div class="quiz-stats-bar">
+                <div>
+                    <div class="label" id="quiz-category-label">Категорія</div>
+                    <div style="font-size:20px; font-weight:800; color:var(--primary); margin-top:5px;">
+                        Бали: <span id="quiz-current-score">0</span>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="label">Життя</div>
+                    <div id="quiz-lives-label">❤️❤️❤️</div>
+                </div>
+            </div>
+            <img id="quiz-question-img" src="" alt="Quiz Image" />
+            <div id="quiz-question-text">Питання?</div>
+            <div class="quiz-options" id="quiz-options-container"></div>
+        </div>
+    </div>
+
+    <!-- Ігровий екран -->
+    <div id="game-screen">
+        <div id="pano"></div>
+        <div id="map-container">
+            <div id="map"></div>
+            <div id="map-expand-hint" onclick="toggleMapExpand(true)">👆 Натисніть, щоб збільшити</div>
+            <button id="map-close-btn" onclick="toggleMapExpand(false)">✕</button>
+        </div>
+        <div id="custom-ui">
+            <div id="custom-header">Наведіть карту на потрібну область</div>
+            <button id="confirm-area-btn" onclick="confirmCustomArea()">ПОЧАТИ ГРУ ТУТ</button>
+        </div>
+        <div id="hud">
+            <div class="hud-header">
+                <div>
+                    <div class="label">Раунд</div>
+                    <div class="val" id="round-ui">1 / 5</div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="label">Загальний рахунок</div>
+                    <div class="val" id="total-score-ui" style="color:var(--success);">0</div>
+                </div>
+            </div>
+            <div class="label">Похибка в цьому раунді</div>
+            <div id="score-display">—</div>
+            <button id="guess-btn" class="game-btn" onclick="processGuess()">ВГАДАТИ МІСЦЕ</button>
+            <button id="next-btn" class="game-btn" onclick="advanceGame()">НАСТУПНИЙ РАУНД</button>
+            <div style="text-align:center; margin-top:20px;">
+                <a href="#" onclick="openDashboard()" style="color:var(--text-muted); font-size:12px; text-decoration:none; font-weight:600;">ЗДАВАТИСЯ ТА ВИЙТИ</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Фінальний екран -->
+    <div id="end-screen" class="overlay-screen">
+        <div class="result-card">
+            <h2 style="font-size:32px; margin-top:0; margin-bottom:5px;" id="end-title">Гру завершено!</h2>
+            <div id="final-rank" style="font-size:18px; color:var(--primary); font-weight:800; margin-bottom:20px;">Аналіз результатів...</div>
+            <div style="font-size:56px; font-weight:800; line-height:1; margin-bottom:30px;">
+                <span id="final-score-val">0</span>
+                <span id="final-score-max" style="font-size:20px; color:var(--text-muted);"> / 25000</span>
+            </div>
+            <div id="history-container" style="background:rgba(0,0,0,0.2); padding:15px 25px; border-radius:20px; margin-bottom:30px; text-align:left;"></div>
+            <div style="display:flex; gap:15px; justify-content:center;">
+                <button class="game-btn" onclick="openDashboard()" style="background:#2a2d3e; width:150px;">В меню</button>
+                <button class="game-btn" id="replay-btn" onclick="restartSameMode()" style="background:var(--success); width:200px;">Грати ще раз</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== JavaScript ===== -->
+    <script>
+        /**
+         * ==========================================
+         *  СТАТИСТИКА ТА ЗБЕРІГАННЯ
+         * ==========================================
+         */
+        const stats = {
+            highScore: localStorage.getItem('geoHighScore') || 0,
+            gamesPlayed: localStorage.getItem('geoGamesPlayed') || 0,
+            quizScore: localStorage.getItem('geoQuizScore') || 0,
+        };
+
+        function updateNavStats() {
+            document.getElementById('stat-high-score').innerText = stats.highScore;
+            document.getElementById('stat-games-played').innerText = stats.gamesPlayed;
+            document.getElementById('stat-quiz-score').innerText = stats.quizScore;
+            document.getElementById('nav-highscore').innerText = stats.highScore;
+        }
+        updateNavStats();
+
+        // ==========================================
+        //  НАВІГАЦІЯ
+        // ==========================================
+        function openDashboard() {
+            clearInterval(quizTimerInterval);
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('end-screen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'flex';
+            document.getElementById('top-nav').style.display = 'flex';
+            document.getElementById('nav-classic').classList.add('active');
+            document.getElementById('nav-quiz').classList.remove('active');
+            updateNavStats();
+        }
+
+        function openQuiz() {
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('end-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'flex';
+            document.getElementById('quiz-category-container').style.display = 'block';
+            document.getElementById('quiz-flag-categories-container').style.display = 'none';
+            document.getElementById('quiz-active-container').style.display = 'none';
+            document.getElementById('nav-classic').classList.remove('active');
+            document.getElementById('nav-quiz').classList.add('active');
+        }
+
+        function showFlagCategories() {
+            document.getElementById('quiz-category-container').style.display = 'none';
+            document.getElementById('quiz-flag-categories-container').style.display = 'block';
+        }
+
+        function backToMainQuiz() {
+            document.getElementById('quiz-flag-categories-container').style.display = 'none';
+            document.getElementById('quiz-category-container').style.display = 'block';
+        }
+
+        // ==========================================
+        //  QUIZ (РЕЖИМ ВИЖИВАННЯ) – РОЗШИРЕНО
+        // ==========================================
+        const quizData = {
+            'Всесвітні прапори 🌍': [
+                { img: 'https://flagcdn.com/w320/ua.png', correct: 'Україна', options: ['Польща', 'Україна', 'Швеція', 'Колумбія'] },
+                { img: 'https://flagcdn.com/w320/jp.png', correct: 'Японія', options: ['Китай', 'Південна Корея', 'Японія', 'В\'єтнам'] },
+                { img: 'https://flagcdn.com/w320/br.png', correct: 'Бразилія', options: ['Аргентина', 'Португалія', 'Бразилія', 'Мексика'] },
+                { img: 'https://flagcdn.com/w320/ca.png', correct: 'Канада', options: ['США', 'Австралія', 'Канада', 'Перу'] },
+                { img: 'https://flagcdn.com/w320/de.png', correct: 'Німеччина', options: ['Бельгія', 'Німеччина', 'Франція', 'Австрія'] },
+                { img: 'https://flagcdn.com/w320/fr.png', correct: 'Франція', options: ['Італія', 'Франція', 'Іспанія', 'Португалія'] },
+                { img: 'https://flagcdn.com/w320/gb.png', correct: 'Велика Британія', options: ['США', 'Велика Британія', 'Австралія', 'Нова Зеландія'] },
+                { img: 'https://flagcdn.com/w320/it.png', correct: 'Італія', options: ['Греція', 'Італія', 'Іспанія', 'Португалія'] },
+                { img: 'https://flagcdn.com/w320/es.png', correct: 'Іспанія', options: ['Португалія', 'Іспанія', 'Франція', 'Італія'] },
+                { img: 'https://flagcdn.com/w320/pt.png', correct: 'Португалія', options: ['Іспанія', 'Португалія', 'Франція', 'Італія'] },
+                { img: 'https://flagcdn.com/w320/nl.png', correct: 'Нідерланди', options: ['Бельгія', 'Нідерланди', 'Люксембург', 'Німеччина'] },
+                { img: 'https://flagcdn.com/w320/be.png', correct: 'Бельгія', options: ['Нідерланди', 'Бельгія', 'Люксембург', 'Франція'] },
+                { img: 'https://flagcdn.com/w320/ch.png', correct: 'Швейцарія', options: ['Австрія', 'Швейцарія', 'Німеччина', 'Франція'] },
+                { img: 'https://flagcdn.com/w320/at.png', correct: 'Австрія', options: ['Німеччина', 'Австрія', 'Швейцарія', 'Угорщина'] },
+                { img: 'https://flagcdn.com/w320/se.png', correct: 'Швеція', options: ['Норвегія', 'Швеція', 'Фінляндія', 'Данія'] },
+                { img: 'https://flagcdn.com/w320/no.png', correct: 'Норвегія', options: ['Швеція', 'Норвегія', 'Фінляндія', 'Данія'] },
+                { img: 'https://flagcdn.com/w320/dk.png', correct: 'Данія', options: ['Норвегія', 'Швеція', 'Данія', 'Фінляндія'] },
+                { img: 'https://flagcdn.com/w320/fi.png', correct: 'Фінляндія', options: ['Швеція', 'Норвегія', 'Фінляндія', 'Данія'] },
+                { img: 'https://flagcdn.com/w320/pl.png', correct: 'Польща', options: ['Україна', 'Польща', 'Чехія', 'Угорщина'] },
+                { img: 'https://flagcdn.com/w320/cz.png', correct: 'Чехія', options: ['Словаччина', 'Чехія', 'Польща', 'Угорщина'] },
+                { img: 'https://flagcdn.com/w320/hu.png', correct: 'Угорщина', options: ['Румунія', 'Угорщина', 'Словаччина', 'Австрія'] },
+                { img: 'https://flagcdn.com/w320/ro.png', correct: 'Румунія', options: ['Угорщина', 'Румунія', 'Болгарія', 'Молдова'] },
+                { img: 'https://flagcdn.com/w320/gr.png', correct: 'Греція', options: ['Туреччина', 'Греція', 'Албанія', 'Болгарія'] },
+                { img: 'https://flagcdn.com/w320/tr.png', correct: 'Туреччина', options: ['Греція', 'Туреччина', 'Болгарія', 'Грузія'] },
+                { img: 'https://flagcdn.com/w320/ru.png', correct: 'Росія', options: ['Білорусь', 'Росія', 'Україна', 'Казахстан'] },
+                { img: 'https://flagcdn.com/w320/cn.png', correct: 'Китай', options: ['Японія', 'Китай', 'Південна Корея', 'В\'єтнам'] },
+                { img: 'https://flagcdn.com/w320/kr.png', correct: 'Південна Корея', options: ['Північна Корея', 'Південна Корея', 'Японія', 'Китай'] },
+                { img: 'https://flagcdn.com/w320/in.png', correct: 'Індія', options: ['Пакистан', 'Індія', 'Бангладеш', 'Шрі-Ланка'] },
+                { img: 'https://flagcdn.com/w320/id.png', correct: 'Індонезія', options: ['Малайзія', 'Індонезія', 'Філіппіни', 'Таїланд'] },
+                { img: 'https://flagcdn.com/w320/pk.png', correct: 'Пакистан', options: ['Індія', 'Пакистан', 'Афганістан', 'Іран'] },
+                { img: 'https://flagcdn.com/w320/bd.png', correct: 'Бангладеш', options: ['Індія', 'Бангладеш', 'М\'янма', 'Пакистан'] },
+                { img: 'https://flagcdn.com/w320/sa.png', correct: 'Саудівська Аравія', options: ['ОАЕ', 'Саудівська Аравія', 'Катар', 'Кувейт'] },
+                { img: 'https://flagcdn.com/w320/ir.png', correct: 'Іран', options: ['Ірак', 'Іран', 'Афганістан', 'Туреччина'] },
+                { img: 'https://flagcdn.com/w320/iq.png', correct: 'Ірак', options: ['Сирія', 'Ірак', 'Іран', 'Туреччина'] },
+                { img: 'https://flagcdn.com/w320/il.png', correct: 'Ізраїль', options: ['Ліван', 'Ізраїль', 'Йорданія', 'Єгипет'] },
+                { img: 'https://flagcdn.com/w320/ae.png', correct: 'ОАЕ', options: ['Саудівська Аравія', 'ОАЕ', 'Катар', 'Кувейт'] },
+                { img: 'https://flagcdn.com/w320/th.png', correct: 'Таїланд', options: ['Малайзія', 'Таїланд', 'В\'єтнам', 'М\'янма'] },
+                { img: 'https://flagcdn.com/w320/vn.png', correct: 'В\'єтнам', options: ['Китай', 'В\'єтнам', 'Таїланд', 'Камбоджа'] },
+                { img: 'https://flagcdn.com/w320/my.png', correct: 'Малайзія', options: ['Індонезія', 'Малайзія', 'Сінгапур', 'Таїланд'] },
+                { img: 'https://flagcdn.com/w320/sg.png', correct: 'Сінгапур', options: ['Малайзія', 'Сінгапур', 'Індонезія', 'Таїланд'] },
+                { img: 'https://flagcdn.com/w320/ph.png', correct: 'Філіппіни', options: ['Індонезія', 'Філіппіни', 'Малайзія', 'Таїланд'] },
+                { img: 'https://flagcdn.com/w320/tw.png', correct: 'Тайвань', options: ['Китай', 'Тайвань', 'Японія', 'Південна Корея'] },
+                { img: 'https://flagcdn.com/w320/eg.png', correct: 'Єгипет', options: ['Лівія', 'Єгипет', 'Судан', 'Саудівська Аравія'] },
+                { img: 'https://flagcdn.com/w320/za.png', correct: 'ПАР', options: ['Намібія', 'ПАР', 'Ботсвана', 'Зімбабве'] },
+                { img: 'https://flagcdn.com/w320/ng.png', correct: 'Нігерія', options: ['Гана', 'Нігерія', 'Камерун', 'Бенін'] },
+                { img: 'https://flagcdn.com/w320/ke.png', correct: 'Кенія', options: ['Танзанія', 'Кенія', 'Уганда', 'Ефіопія'] },
+                { img: 'https://flagcdn.com/w320/tz.png', correct: 'Танзанія', options: ['Кенія', 'Танзанія', 'Уганда', 'Мозамбік'] },
+                { img: 'https://flagcdn.com/w320/gh.png', correct: 'Гана', options: ['Кот-д\'Івуар', 'Гана', 'Нігерія', 'Буркіна-Фасо'] },
+                { img: 'https://flagcdn.com/w320/ma.png', correct: 'Марокко', options: ['Алжир', 'Марокко', 'Туніс', 'Лівія'] },
+                { img: 'https://flagcdn.com/w320/dz.png', correct: 'Алжир', options: ['Марокко', 'Алжир', 'Туніс', 'Лівія'] },
+                { img: 'https://flagcdn.com/w320/tn.png', correct: 'Туніс', options: ['Алжир', 'Туніс', 'Лівія', 'Марокко'] },
+                { img: 'https://flagcdn.com/w320/ly.png', correct: 'Лівія', options: ['Єгипет', 'Лівія', 'Алжир', 'Чад'] },
+                { img: 'https://flagcdn.com/w320/et.png', correct: 'Ефіопія', options: ['Еритрея', 'Ефіопія', 'Сомалі', 'Судан'] },
+                { img: 'https://flagcdn.com/w320/sd.png', correct: 'Судан', options: ['Єгипет', 'Судан', 'Чад', 'Ефіопія'] },
+                { img: 'https://flagcdn.com/w320/ug.png', correct: 'Уганда', options: ['Кенія', 'Уганда', 'Руанда', 'ДР Конго'] },
+                { img: 'https://flagcdn.com/w320/zm.png', correct: 'Замбія', options: ['Зімбабве', 'Замбія', 'Мозамбік', 'Ангола'] },
+                { img: 'https://flagcdn.com/w320/zw.png', correct: 'Зімбабве', options: ['ПАР', 'Зімбабве', 'Замбія', 'Ботсвана'] },
+                { img: 'https://flagcdn.com/w320/mw.png', correct: 'Малаві', options: ['Замбія', 'Малаві', 'Мозамбік', 'Танзанія'] },
+                { img: 'https://flagcdn.com/w320/mz.png', correct: 'Мозамбік', options: ['ПАР', 'Мозамбік', 'Танзанія', 'Мадагаскар'] },
+                { img: 'https://flagcdn.com/w320/ao.png', correct: 'Ангола', options: ['ДР Конго', 'Ангола', 'Намібія', 'Замбія'] },
+                { img: 'https://flagcdn.com/w320/ci.png', correct: 'Кот-д\'Івуар', options: ['Гана', 'Кот-д\'Івуар', 'Буркіна-Фасо', 'Ліберія'] },
+                { img: 'https://flagcdn.com/w320/sn.png', correct: 'Сенегал', options: ['Мавританія', 'Сенегал', 'Малі', 'Гвінея'] },
+                { img: 'https://flagcdn.com/w320/ml.png', correct: 'Малі', options: ['Сенегал', 'Малі', 'Буркіна-Фасо', 'Нігер'] },
+                { img: 'https://flagcdn.com/w320/ne.png', correct: 'Нігер', options: ['Малі', 'Нігер', 'Нігерія', 'Буркіна-Фасо'] },
+                { img: 'https://flagcdn.com/w320/cd.png', correct: 'ДР Конго', options: ['Ангола', 'ДР Конго', 'Замбія', 'Республіка Конго'] },
+            ],
+            'Європа 🇪🇺': [
+                { img: 'https://flagcdn.com/w320/ua.png', correct: 'Україна', options: ['Польща', 'Україна', 'Швеція', 'Колумбія'] },
+                { img: 'https://flagcdn.com/w320/gb.png', correct: 'Велика Британія', options: ['США', 'Велика Британія', 'Австралія', 'Нова Зеландія'] },
+                { img: 'https://flagcdn.com/w320/fr.png', correct: 'Франція', options: ['Італія', 'Франція', 'Іспанія', 'Португалія'] },
+                { img: 'https://flagcdn.com/w320/de.png', correct: 'Німеччина', options: ['Бельгія', 'Німеччина', 'Франція', 'Австрія'] },
+                { img: 'https://flagcdn.com/w320/it.png', correct: 'Італія', options: ['Греція', 'Італія', 'Іспанія', 'Португалія'] },
+                { img: 'https://flagcdn.com/w320/es.png', correct: 'Іспанія', options: ['Португалія', 'Іспанія', 'Франція', 'Італія'] },
+                { img: 'https://flagcdn.com/w320/pt.png', correct: 'Португалія', options: ['Іспанія', 'Португалія', 'Франція', 'Італія'] },
+                { img: 'https://flagcdn.com/w320/nl.png', correct: 'Нідерланди', options: ['Бельгія', 'Нідерланди', 'Люксембург', 'Німеччина'] },
+                { img: 'https://flagcdn.com/w320/be.png', correct: 'Бельгія', options: ['Нідерланди', 'Бельгія', 'Люксембург', 'Франція'] },
+                { img: 'https://flagcdn.com/w320/ch.png', correct: 'Швейцарія', options: ['Австрія', 'Швейцарія', 'Німеччина', 'Франція'] },
+                { img: 'https://flagcdn.com/w320/at.png', correct: 'Австрія', options: ['Німеччина', 'Австрія', 'Швейцарія', 'Угорщина'] },
+                { img: 'https://flagcdn.com/w320/se.png', correct: 'Швеція', options: ['Норвегія', 'Швеція', 'Фінляндія', 'Данія'] },
+                { img: 'https://flagcdn.com/w320/no.png', correct: 'Норвегія', options: ['Швеція', 'Норвегія', 'Фінляндія', 'Данія'] },
+                { img: 'https://flagcdn.com/w320/dk.png', correct: 'Данія', options: ['Норвегія', 'Швеція', 'Данія', 'Фінляндія'] },
+                { img: 'https://flagcdn.com/w320/fi.png', correct: 'Фінляндія', options: ['Швеція', 'Норвегія', 'Фінляндія', 'Данія'] },
+                { img: 'https://flagcdn.com/w320/pl.png', correct: 'Польща', options: ['Україна', 'Польща', 'Чехія', 'Угорщина'] },
+                { img: 'https://flagcdn.com/w320/cz.png', correct: 'Чехія', options: ['Словаччина', 'Чехія', 'Польща', 'Угорщина'] },
+                { img: 'https://flagcdn.com/w320/hu.png', correct: 'Угорщина', options: ['Румунія', 'Угорщина', 'Словаччина', 'Австрія'] },
+                { img: 'https://flagcdn.com/w320/ro.png', correct: 'Румунія', options: ['Угорщина', 'Румунія', 'Болгарія', 'Молдова'] },
+                { img: 'https://flagcdn.com/w320/gr.png', correct: 'Греція', options: ['Туреччина', 'Греція', 'Албанія', 'Болгарія'] },
+                { img: 'https://flagcdn.com/w320/tr.png', correct: 'Туреччина', options: ['Греція', 'Туреччина', 'Болгарія', 'Грузія'] },
+                { img: 'https://flagcdn.com/w320/ru.png', correct: 'Росія', options: ['Білорусь', 'Росія', 'Україна', 'Казахстан'] },
+                { img: 'https://flagcdn.com/w320/by.png', correct: 'Білорусь', options: ['Росія', 'Білорусь', 'Україна', 'Польща'] },
+                { img: 'https://flagcdn.com/w320/md.png', correct: 'Молдова', options: ['Румунія', 'Молдова', 'Україна', 'Білорусь'] },
+                { img: 'https://flagcdn.com/w320/ie.png', correct: 'Ірландія', options: ['Велика Британія', 'Ірландія', 'Франція', 'Іспанія'] },
+                { img: 'https://flagcdn.com/w320/is.png', correct: 'Ісландія', options: ['Норвегія', 'Ісландія', 'Данія', 'Швеція'] },
+                { img: 'https://flagcdn.com/w320/lt.png', correct: 'Литва', options: ['Латвія', 'Литва', 'Естонія', 'Польща'] },
+                { img: 'https://flagcdn.com/w320/lv.png', correct: 'Латвія', options: ['Литва', 'Латвія', 'Естонія', 'Білорусь'] },
+                { img: 'https://flagcdn.com/w320/ee.png', correct: 'Естонія', options: ['Латвія', 'Естонія', 'Фінляндія', 'Росія'] },
+                { img: 'https://flagcdn.com/w320/si.png', correct: 'Словенія', options: ['Хорватія', 'Словенія', 'Австрія', 'Італія'] },
+                { img: 'https://flagcdn.com/w320/hr.png', correct: 'Хорватія', options: ['Словенія', 'Хорватія', 'Боснія і Герцеговина', 'Угорщина'] },
+                { img: 'https://flagcdn.com/w320/ba.png', correct: 'Боснія і Герцеговина', options: ['Хорватія', 'Боснія і Герцеговина', 'Сербія', 'Чорногорія'] },
+                { img: 'https://flagcdn.com/w320/rs.png', correct: 'Сербія', options: ['Хорватія', 'Сербія', 'Боснія і Герцеговина', 'Угорщина'] },
+                { img: 'https://flagcdn.com/w320/me.png', correct: 'Чорногорія', options: ['Сербія', 'Чорногорія', 'Албанія', 'Боснія і Герцеговина'] },
+                { img: 'https://flagcdn.com/w320/mk.png', correct: 'Північна Македонія', options: ['Болгарія', 'Північна Македонія', 'Греція', 'Албанія'] },
+                { img: 'https://flagcdn.com/w320/al.png', correct: 'Албанія', options: ['Греція', 'Албанія', 'Північна Македонія', 'Чорногорія'] },
+            ],
+            'Азія 🌏': [
+                { img: 'https://flagcdn.com/w320/cn.png', correct: 'Китай', options: ['Японія', 'Китай', 'Південна Корея', 'В\'єтнам'] },
+                { img: 'https://flagcdn.com/w320/jp.png', correct: 'Японія', options: ['Китай', 'Південна Корея', 'Японія', 'В\'єтнам'] },
+                { img: 'https://flagcdn.com/w320/kr.png', correct: 'Південна Корея', options: ['Північна Корея', 'Південна Корея', 'Японія', 'Китай'] },
+                { img: 'https://flagcdn.com/w320/in.png', correct: 'Індія', options: ['Пакистан', 'Індія', 'Бангладеш', 'Шрі-Ланка'] },
+                { img: 'https://flagcdn.com/w320/id.png', correct: 'Індонезія', options: ['Малайзія', 'Індонезія', 'Філіппіни', 'Таїланд'] },
+                { img: 'https://flagcdn.com/w320/pk.png', correct: 'Пакистан', options: ['Індія', 'Пакистан', 'Афганістан', 'Іран'] },
+                { img: 'https://flagcdn.com/w320/bd.png', correct: 'Бангладеш', options: ['Індія', 'Бангладеш', 'М\'янма', 'Пакистан'] },
+                { img: 'https://flagcdn.com/w320/ru.png', correct: 'Росія', options: ['Білорусь', 'Росія', 'Україна', 'Казахстан'] },
+                { img: 'https://flagcdn.com/w320/tr.png', correct: 'Туреччина', options: ['Греція', 'Туреччина', 'Болгарія', 'Грузія'] },
+                { img: 'https://flagcdn.com/w320/sa.png', correct: 'Саудівська Аравія', options: ['ОАЕ', 'Саудівська Аравія', 'Катар', 'Кувейт'] },
+                { img: 'https://flagcdn.com/w320/ir.png', correct: 'Іран', options: ['Ірак', 'Іран', 'Афганістан', 'Туреччина'] },
+                { img: 'https://flagcdn.com/w320/iq.png', correct: 'Ірак', options: ['Сирія', 'Ірак', 'Іран', 'Туреччина'] },
+                { img: 'https://flagcdn.com/w320/il.png', correct: 'Ізраїль', options: ['Ліван', 'Ізраїль', 'Йорданія', 'Єгипет'] },
+                { img: 'https://flagcdn.com/w320/ae.png', correct: 'ОАЕ', options: ['Саудівська Аравія', 'ОАЕ', 'Катар', 'Кувейт'] },
+                { img: 'https://flagcdn.com/w320/th.png', correct: 'Таїланд', options: ['Малайзія', 'Таїланд', 'В\'єтнам', 'М\'янма'] },
+                { img: 'https://flagcdn.com/w320/vn.png', correct: 'В\'єтнам', options: ['Китай', 'В\'єтнам', 'Таїланд', 'Камбоджа'] },
+                { img: 'https://flagcdn.com/w320/my.png', correct: 'Малайзія', options: ['Індонезія', 'Малайзія', 'Сінгапур', 'Таїланд'] },
+                { img: 'https://flagcdn.com/w320/sg.png', correct: 'Сінгапур', options: ['Малайзія', 'Сінгапур', 'Індонезія', 'Таїланд'] },
+                { img: 'https://flagcdn.com/w320/ph.png', correct: 'Філіппіни', options: ['Індонезія', 'Філіппіни', 'Малайзія', 'Таїланд'] },
+                { img: 'https://flagcdn.com/w320/tw.png', correct: 'Тайвань', options: ['Китай', 'Тайвань', 'Японія', 'Південна Корея'] },
+                { img: 'https://flagcdn.com/w320/kz.png', correct: 'Казахстан', options: ['Росія', 'Казахстан', 'Киргизстан', 'Узбекистан'] },
+                { img: 'https://flagcdn.com/w320/uz.png', correct: 'Узбекистан', options: ['Казахстан', 'Узбекистан', 'Туркменістан', 'Киргизстан'] },
+                { img: 'https://flagcdn.com/w320/af.png', correct: 'Афганістан', options: ['Пакистан', 'Афганістан', 'Іран', 'Таджикистан'] },
+                { img: 'https://flagcdn.com/w320/mm.png', correct: 'М\'янма', options: ['Таїланд', 'М\'янма', 'Бангладеш', 'Китай'] },
+                { img: 'https://flagcdn.com/w320/kh.png', correct: 'Камбоджа', options: ['Таїланд', 'Камбоджа', 'В\'єтнам', 'Лаос'] },
+                { img: 'https://flagcdn.com/w320/la.png', correct: 'Лаос', options: ['Китай', 'Лаос', 'Таїланд', 'В\'єтнам'] },
+                { img: 'https://flagcdn.com/w320/mn.png', correct: 'Монголія', options: ['Китай', 'Монголія', 'Росія', 'Казахстан'] },
+                { img: 'https://flagcdn.com/w320/np.png', correct: 'Непал', options: ['Індія', 'Непал', 'Китай', 'Бангладеш'] },
+                { img: 'https://flagcdn.com/w320/lk.png', correct: 'Шрі-Ланка', options: ['Індія', 'Шрі-Ланка', 'Мальдіви', 'Бангладеш'] },
+            ],
+            'Африка 🌍': [
+                { img: 'https://flagcdn.com/w320/eg.png', correct: 'Єгипет', options: ['Лівія', 'Єгипет', 'Судан', 'Саудівська Аравія'] },
+                { img: 'https://flagcdn.com/w320/za.png', correct: 'ПАР', options: ['Намібія', 'ПАР', 'Ботсвана', 'Зімбабве'] },
+                { img: 'https://flagcdn.com/w320/ng.png', correct: 'Нігерія', options: ['Гана', 'Нігерія', 'Камерун', 'Бенін'] },
+                { img: 'https://flagcdn.com/w320/ke.png', correct: 'Кенія', options: ['Танзанія', 'Кенія', 'Уганда', 'Ефіопія'] },
+                { img: 'https://flagcdn.com/w320/tz.png', correct: 'Танзанія', options: ['Кенія', 'Танзанія', 'Уганда', 'Мозамбік'] },
+                { img: 'https://flagcdn.com/w320/gh.png', correct: 'Гана', options: ['Кот-д\'Івуар', 'Гана', 'Нігерія', 'Буркіна-Фасо'] },
+                { img: 'https://flagcdn.com/w320/ma.png', correct: 'Марокко', options: ['Алжир', 'Марокко', 'Туніс', 'Лівія'] },
+                { img: 'https://flagcdn.com/w320/dz.png', correct: 'Алжир', options: ['Марокко', 'Алжир', 'Туніс', 'Лівія'] },
+                { img: 'https://flagcdn.com/w320/tn.png', correct: 'Туніс', options: ['Алжир', 'Туніс', 'Лівія', 'Марокко'] },
+                { img: 'https://flagcdn.com/w320/ly.png', correct: 'Лівія', options: ['Єгипет', 'Лівія', 'Алжир', 'Чад'] },
+                { img: 'https://flagcdn.com/w320/et.png', correct: 'Ефіопія', options: ['Еритрея', 'Ефіопія', 'Сомалі', 'Судан'] },
+                { img: 'https://flagcdn.com/w320/sd.png', correct: 'Судан', options: ['Єгипет', 'Судан', 'Чад', 'Ефіопія'] },
+                { img: 'https://flagcdn.com/w320/ug.png', correct: 'Уганда', options: ['Кенія', 'Уганда', 'Руанда', 'ДР Конго'] },
+                { img: 'https://flagcdn.com/w320/zm.png', correct: 'Замбія', options: ['Зімбабве', 'Замбія', 'Мозамбік', 'Ангола'] },
+                { img: 'https://flagcdn.com/w320/zw.png', correct: 'Зімбабве', options: ['ПАР', 'Зімбабве', 'Замбія', 'Ботсвана'] },
+                { img: 'https://flagcdn.com/w320/mw.png', correct: 'Малаві', options: ['Замбія', 'Малаві', 'Мозамбік', 'Танзанія'] },
+                { img: 'https://flagcdn.com/w320/mz.png', correct: 'Мозамбік', options: ['ПАР', 'Мозамбік', 'Танзанія', 'Мадагаскар'] },
+                { img: 'https://flagcdn.com/w320/ao.png', correct: 'Ангола', options: ['ДР Конго', 'Ангола', 'Намібія', 'Замбія'] },
+                { img: 'https://flagcdn.com/w320/ci.png', correct: 'Кот-д\'Івуар', options: ['Гана', 'Кот-д\'Івуар', 'Буркіна-Фасо', 'Ліберія'] },
+                { img: 'https://flagcdn.com/w320/sn.png', correct: 'Сенегал', options: ['Мавританія', 'Сенегал', 'Малі', 'Гвінея'] },
+                { img: 'https://flagcdn.com/w320/ml.png', correct: 'Малі', options: ['Сенегал', 'Малі', 'Буркіна-Фасо', 'Нігер'] },
+                { img: 'https://flagcdn.com/w320/ne.png', correct: 'Нігер', options: ['Малі', 'Нігер', 'Нігерія', 'Буркіна-Фасо'] },
+                { img: 'https://flagcdn.com/w320/cd.png', correct: 'ДР Конго', options: ['Ангола', 'ДР Конго', 'Замбія', 'Республіка Конго'] },
+                { img: 'https://flagcdn.com/w320/cg.png', correct: 'Республіка Конго', options: ['ДР Конго', 'Республіка Конго', 'Габон', 'Ангола'] },
+                { img: 'https://flagcdn.com/w320/ga.png', correct: 'Габон', options: ['Камерун', 'Габон', 'Республіка Конго', 'Екваторіальна Гвінея'] },
+                { img: 'https://flagcdn.com/w320/cm.png', correct: 'Камерун', options: ['Нігерія', 'Камерун', 'Чад', 'Габон'] },
+                { img: 'https://flagcdn.com/w320/bf.png', correct: 'Буркіна-Фасо', options: ['Малі', 'Буркіна-Фасо', 'Гана', 'Нігер'] },
+                { img: 'https://flagcdn.com/w320/tg.png', correct: 'Того', options: ['Гана', 'Того', 'Бенін', 'Буркіна-Фасо'] },
+                { img: 'https://flagcdn.com/w320/bj.png', correct: 'Бенін', options: ['Того', 'Бенін', 'Нігерія', 'Буркіна-Фасо'] },
+            ],
+            'Авто-Мета 🚗': [
+                { text: 'В якій з цих країн автомобілі рухаються по ЛІВІЙ стороні дороги?', correct: 'Австралія', options: ['США', 'Австралія', 'Франція', 'Іспанія'] },
+                { text: 'В якій країні ОБИДВА номерні знаки (і спереду, і ззаду) найчастіше жовтого кольору?', correct: 'Нідерланди', options: ['Велика Британія', 'Франція', 'Нідерланди', 'Німеччина'] },
+                { text: 'В якій країні дорожні знаки пішохідного переходу мають жовтий фон замість білого?', correct: 'Польща', options: ['Німеччина', 'Польща', 'Італія', 'США'] },
+                { text: 'Де на дорогах можна побачити подвійну суцільну ЖОВТУ лінію по центру дороги?', correct: 'США / Канада', options: ['США / Канада', 'Англія / Ірландія', 'Польща / Чехія', 'Японія / Корея'] },
+                { text: 'Яка країна є найбільшим виробником автомобілів у світі?', correct: 'Китай', options: ['США', 'Японія', 'Китай', 'Німеччина'] },
+                { text: 'Яка європейська країна першою масово запровадила сині смуги з зірочками ЄС на номерах?', correct: 'Італія', options: ['Німеччина', 'Франція', 'Італія', 'Іспанія'] },
+                { text: 'У якій країні на передніх номерах автомобілів обов\'язково наноситься синя смуга з літерою "E"?', correct: 'Іспанія', options: ['Іспанія', 'Естонія', 'Еквадор', 'Єгипет'] },
+            ],
+            'Столиці 🏛️': [
+                { text: 'Яка столиця Канади?', correct: 'Оттава', options: ['Торонто', 'Монреаль', 'Ванкувер', 'Оттава'] },
+                { text: 'Яке місто є столицею Австралії?', correct: 'Канберра', options: ['Сідней', 'Мельбурн', 'Канберра', 'Перт'] },
+                { text: 'Назви столицю Норвегії.', correct: 'Осло', options: ['Стокгольм', 'Осло', 'Гельсінкі', 'Копенгаген'] },
+                { text: 'Яка столиця Іспанії?', correct: 'Мадрид', options: ['Барселона', 'Лісабон', 'Мадрид', 'Севілья'] },
+                { text: 'Яке місто є столицею Швейцарії?', correct: 'Берн', options: ['Женева', 'Цюрих', 'Берн', 'Базель'] },
+                { text: 'Яка столиця Єгипту?', correct: 'Каїр', options: ['Александрія', 'Каїр', 'Гіза', 'Луксор'] },
+                { text: 'Назви столицю Японії.', correct: 'Токіо', options: ['Осака', 'Кіото', 'Токіо', 'Нагоя'] },
+                { text: 'Яка столиця Бразилії?', correct: 'Бразиліа', options: ['Ріо-де-Жанейро', 'Сан-Паулу', 'Бразиліа', 'Сальвадор'] },
+                { text: 'Яке місто є столицею ПАР?', correct: 'Преторія', options: ['Кейптаун', 'Йоганнесбург', 'Преторія', 'Дурбан'] },
+                { text: 'Назви столицю Аргентини.', correct: 'Буенос-Айрес', options: ['Кордова', 'Буенос-Айрес', 'Розаріо', 'Мендоса'] },
+                { text: 'Яка столиця Нової Зеландії?', correct: 'Веллінгтон', options: ['Окленд', 'Веллінгтон', 'Крайстчерч', 'Гамільтон'] },
+            ],
+        };
+
+        let quizTimerInterval;
+        let quizTimeLeft;
+        let currentQuizCorrectAnswer;
+        let quizLives = 3;
+        let currentQuizScore = 0;
+        let activeQuizCategory = '';
+
+        function startQuizSurvival(category) {
+            activeQuizCategory = category;
+            quizLives = 3;
+            currentQuizScore = 0;
+            document.getElementById('quiz-category-container').style.display = 'none';
+            document.getElementById('quiz-flag-categories-container').style.display = 'none';
+            document.getElementById('quiz-active-container').style.display = 'block';
+            document.getElementById('quiz-category-label').innerText = category;
+            document.getElementById('quiz-current-score').innerText = '0';
+            updateQuizLivesUI();
+            nextQuizQuestion();
+        }
+
+        function updateQuizLivesUI() {
+            let hearts = '';
+            for (let i = 0; i < 3; i++) {
+                hearts += i < quizLives ? '❤️' : '🖤';
+            }
+            document.getElementById('quiz-lives-label').innerText = hearts;
+        }
+
+        function nextQuizQuestion() {
+            const questions = quizData[activeQuizCategory];
+            if (!questions || questions.length === 0) {
+                alert('Немає питань для цієї категорії!');
+                return;
+            }
+            const q = questions[Math.floor(Math.random() * questions.length)];
+            currentQuizCorrectAnswer = q.correct;
+
+            const imgEl = document.getElementById('quiz-question-img');
+            const textEl = document.getElementById('quiz-question-text');
+            if (q.img) {
+                imgEl.src = q.img;
+                imgEl.style.display = 'inline-block';
+                textEl.innerText = 'Якій країні належить цей прапор?';
+            } else {
+                imgEl.style.display = 'none';
+                textEl.innerText = q.text;
+            }
+
+            const optsContainer = document.getElementById('quiz-options-container');
+            optsContainer.innerHTML = '';
+            const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+            shuffledOptions.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-opt-btn';
+                btn.innerText = opt;
+                btn.onclick = () => submitQuizAnswer(btn, opt);
+                optsContainer.appendChild(btn);
+            });
+
+            // Таймер – 10 секунд
+            quizTimeLeft = 100;
+            const bar = document.getElementById('quiz-timer-bar');
+            bar.style.width = '100%';
+            bar.style.background = 'var(--success)';
+            clearInterval(quizTimerInterval);
+            quizTimerInterval = setInterval(() => {
+                quizTimeLeft -= 1;
+                bar.style.width = quizTimeLeft + '%';
+                if (quizTimeLeft < 40) bar.style.background = 'var(--danger)';
+                else if (quizTimeLeft < 70) bar.style.background = '#f59e0b'; // amber
+                if (quizTimeLeft <= 0) {
+                    clearInterval(quizTimerInterval);
+                    submitQuizAnswer(null, null); // час вийшов
+                }
+            }, 100);
+        }
+
+        function submitQuizAnswer(clickedBtn, selectedAnswer) {
+            clearInterval(quizTimerInterval);
+            const buttons = document.querySelectorAll('.quiz-opt-btn');
+            buttons.forEach((b) => (b.disabled = true));
+
+            if (selectedAnswer === currentQuizCorrectAnswer) {
+                if (clickedBtn) clickedBtn.classList.add('correct');
+                const pointsEarned = Math.round(quizTimeLeft * 10);
+                currentQuizScore += pointsEarned;
+                document.getElementById('quiz-current-score').innerText = currentQuizScore;
+            } else {
+                if (clickedBtn) clickedBtn.classList.add('wrong');
+                buttons.forEach((b) => {
+                    if (b.innerText === currentQuizCorrectAnswer) b.classList.add('correct');
+                });
+                quizLives--;
+                updateQuizLivesUI();
+            }
+
+            setTimeout(() => {
+                if (quizLives > 0) {
+                    nextQuizQuestion();
+                } else {
+                    endQuizSurvival();
+                }
+            }, 1500);
+        }
+
+        function endQuizSurvival() {
+            stats.quizScore = parseInt(stats.quizScore) + currentQuizScore;
+            localStorage.setItem('geoQuizScore', stats.quizScore);
+            updateNavStats();
+
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('end-screen').style.display = 'flex';
+            document.getElementById('end-title').innerText = 'Гру завершено!';
+            document.getElementById('final-rank').innerText = 'Ви втратили всі життя 💔';
+            document.getElementById('final-score-val').innerText = '+' + currentQuizScore;
+            document.getElementById('final-score-max').innerText = ' балів';
+            document.getElementById('history-container').innerHTML =
+                `<div style="text-align:center; color:var(--text-muted); font-size:18px;">
+                    Загальний рахунок у Quiz: <b style="color:white">${stats.quizScore}</b>
+                </div>`;
+            document.getElementById('replay-btn').innerText = 'Зіграти ще раз';
+            document.getElementById('replay-btn').onclick = openQuiz;
+        }
+
+        // ==========================================
+        //  ГОЛОВНА ЛОГІКА ГРИ (MAPS) – БЕЗ ЗМІН
+        // ==========================================
+        let panorama, map, userMarker, resultMarker, polyline, svService, geocoder;
+        let actualLocation, mapGameMode = 'world',
+            customBounds = null;
+        let usedLocations = [];
+        const MAX_ROUNDS = 5;
+        let currentRound = 1;
+        let totalScore = 0;
+        let roundHistory = [];
+
+        const MAPS_REGION_DATA = {
+            world: { lat: [-60, 75], lng: [-180, 180], zoom: 1, center: { lat: 20, lng: 0 } },
+            europe: { lat: [36, 70], lng: [-12, 45], zoom: 4, center: { lat: 50, lng: 15 } },
+            ukraine: { lat: [44.4, 52.3], lng: [22.1, 40.2], zoom: 6, center: { lat: 48.3, lng: 31.1 } },
+            lviv: { lat: [48.9, 50.4], lng: [22.6, 25.3], zoom: 9, center: { lat: 49.8, lng: 24.0 } },
+        };
+
+        function initMap() {
+            svService = new google.maps.StreetViewService();
+            geocoder = new google.maps.Geocoder();
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 20, lng: 0 },
+                zoom: 2,
+                disableDefaultUI: true,
+                zoomControl: true,
+                gestureHandling: 'greedy' // <-- ДОДАЙ ЦЕЙ РЯДОК ДЛЯ 1-ПАЛЬЦЕВОГО КЕРУВАННЯ
+            });
+            map.addListener('click', (e) => {
+                if (document.getElementById('guess-btn').style.display !== 'none') dropMarker(e.latLng);
+            });
+        }
+        let mapToggleLock = false;
+        function toggleMapExpand(expand) {
+            if (mapToggleLock) return;
+            mapToggleLock = true;
+            const el = document.getElementById('map-container');
+            const willExpand = typeof expand === 'boolean' ? expand : !el.classList.contains('expanded');
+            el.classList.toggle('expanded', willExpand);
+            setTimeout(() => google.maps.event.trigger(map, 'resize'), 320);
+            setTimeout(() => { mapToggleLock = false; }, 500);
+        }
+
+        function initGame(mode) {
+            mapGameMode = mode;
+            resetGameVariables();
+            document.getElementById('top-nav').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            triggerNextRound();
+        }
+
+        // ---- Режим "Своя територія" ----
+        function enterCustomMode() {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('top-nav').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            const mapContainer = document.getElementById('map-container');
+            mapContainer.classList.add('full-screen');
+            document.getElementById('custom-ui').style.display = 'block';
+            document.getElementById('hud').style.display = 'none';
+            map.setCenter({ lat: 48.3, lng: 31.1 });
+            map.setZoom(5);
+            google.maps.event.trigger(map, 'resize');
+        }
+
+        function confirmCustomArea() {
+            const bounds = map.getBounds();
+            if (!bounds) return;
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            customBounds = {
+                lat: [sw.lat(), ne.lat()],
+                lng: [sw.lng(), ne.lng()],
+            };
+            const mapContainer = document.getElementById('map-container');
+            mapContainer.classList.remove('full-screen');
+            document.getElementById('custom-ui').style.display = 'none';
+            document.getElementById('hud').style.display = 'block';
+            initGame('custom');
+        }
+
+        // ---- Службові функції гри ----
+        function resetGameVariables() {
+            currentRound = 1;
+            totalScore = 0;
+            roundHistory = [];
+            usedLocations = [];
+            updateHUD();
+        }
+
+        function updateHUD() {
+            document.getElementById('round-ui').innerText = `${currentRound} / ${MAX_ROUNDS}`;
+            document.getElementById('total-score-ui').innerText = totalScore;
+        }
+
+        function triggerNextRound() {
+            clearPrevState();
+            document.getElementById('loading-overlay').style.display = 'flex';
+            seekLocation();
+        }
+
+        function seekLocation() {
+            const b = mapGameMode === 'custom' ? customBounds : MAPS_REGION_DATA[mapGameMode];
+            const rLat = b.lat[0] + Math.random() * (b.lat[1] - b.lat[0]);
+            const rLng = b.lng[0] + Math.random() * (b.lng[1] - b.lng[0]);
+            const rand = new google.maps.LatLng(rLat, rLng);
+            const searchRadius = mapGameMode === 'custom' ? 5000 : 50000;
+
+            svService.getPanorama({ location: rand, radius: searchRadius, source: google.maps.StreetViewSource.OUTDOOR },
+                (data, status) => {
+                    if (status === 'OK') {
+                        const found = data.location.latLng;
+                        if (mapGameMode === 'custom') {
+                            if (found.lat() < customBounds.lat[0] || found.lat() > customBounds.lat[1] ||
+                                found.lng() < customBounds.lng[0] || found.lng() > customBounds.lng[1]) {
+                                return setTimeout(seekLocation, 100);
+                            }
+                        }
+                        const isRepeated = usedLocations.some((loc) =>
+                            google.maps.geometry.spherical.computeDistanceBetween(loc, found) < 200
+                        );
+                        if (isRepeated) return setTimeout(seekLocation, 100);
+
+                        if (mapGameMode === 'ukraine' || mapGameMode === 'lviv') {
+                            geocoder.geocode({ location: found }, (res, gStat) => {
+                                if (gStat === 'OK' && res[0]) {
+                                    const addr = res[0].formatted_address.toLowerCase();
+                                    const isUA = res.some((r) => r.address_components.some((c) => c.short_name === 'UA'));
+                                    if (mapGameMode === 'ukraine' && isUA) return finalizeLoc(found);
+                                    if (mapGameMode === 'lviv' &&
+                                        (addr.includes('lviv') || addr.includes('львів') || addr.includes('львівська'))) {
+                                        return finalizeLoc(found);
+                                    }
+                                    setTimeout(seekLocation, 100);
+                                } else {
+                                    setTimeout(seekLocation, gStat === 'OVER_QUERY_LIMIT' ? 1000 : 100);
+                                }
+                            });
+                        } else {
+                            finalizeLoc(found);
+                        }
+                    } else {
+                        setTimeout(seekLocation, status === 'OVER_QUERY_LIMIT' ? 1000 : 50);
+                    }
+                });
+        }
+
+        function finalizeLoc(loc) {
+            actualLocation = loc;
+            usedLocations.push(loc);
+            if (usedLocations.length > 50) usedLocations.shift();
+            panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {
+                position: loc,
+                pov: { heading: Math.random() * 360, pitch: 0 },
+                zoom: 0,
+                addressControl: false,
+                showRoadLabels: false,
+            });
+            document.getElementById('loading-overlay').style.display = 'none';
+            google.maps.event.trigger(map, 'resize');
+        }
+
+        function dropMarker(latLng) {
+            if (userMarker) {
+                userMarker.setPosition(latLng);
+            } else {
+                userMarker = new google.maps.Marker({
+                    position: latLng,
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 9,
+                        fillColor: '#5c67ff',
+                        fillOpacity: 1,
+                        strokeColor: '#fff',
+                        strokeWeight: 3,
+                    },
+                });
+            }
+        }
+
+        function processGuess() {
+            if (!userMarker) return;
+            const guess = userMarker.getPosition();
+            const dist = google.maps.geometry.spherical.computeDistanceBetween(actualLocation, guess);
+            const score = Math.max(0, Math.floor(5000 * Math.exp(-dist / (mapGameMode === 'world' ? 250000 : 25000))));
+            totalScore += score;
+            roundHistory.push({ distance: dist, score: score });
+            updateHUD();
+
+            document.getElementById('score-display').innerHTML =
+                `<span style="color:var(--primary)">${formatDist(dist)}</span> <span style="font-size:16px; color:var(--text-muted); margin-left:10px;">(+${score})</span>`;
+
+            resultMarker = new google.maps.Marker({ position: actualLocation, map: map });
+            polyline = new google.maps.Polyline({
+                path: [guess, actualLocation],
+                geodesic: true,
+                strokeColor: '#5c67ff',
+                strokeOpacity: 0.8,
+                strokeWeight: 3,
+                map: map,
+            });
+            const bounds = new google.maps.LatLngBounds();
+            bounds.extend(guess);
+            bounds.extend(actualLocation);
+            map.fitBounds(bounds);
+
+            document.getElementById('guess-btn').style.display = 'none';
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.innerText = currentRound === MAX_ROUNDS ? 'ДІЗНАТИСЯ РЕЗУЛЬТАТ' : 'НАСТУПНИЙ РАУНД';
+            nextBtn.style.display = 'block';
+        }
+
+        function advanceGame() {
+            if (currentRound === MAX_ROUNDS) {
+                saveMapStats();
+                showMapResults();
+            } else {
+                currentRound++;
+                updateHUD();
+                triggerNextRound();
+            }
+        }
+
+        function formatDist(d) {
+            return d < 1000 ? `${Math.round(d)} м` : `${(d / 1000).toFixed(1)} км`;
+        }
+
+        function saveMapStats() {
+            stats.gamesPlayed++;
+            if (totalScore > stats.highScore) stats.highScore = totalScore;
+            localStorage.setItem('geoHighScore', stats.highScore);
+            localStorage.setItem('geoGamesPlayed', stats.gamesPlayed);
+            updateNavStats();
+        }
+
+        function showMapResults() {
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('end-screen').style.display = 'flex';
+            document.getElementById('end-title').innerText = 'Гру завершено!';
+            document.getElementById('final-score-val').innerText = totalScore;
+            document.getElementById('final-score-max').innerText = ' / 25000';
+
+            let rankText = '';
+            if (totalScore >= 24000) rankText = 'Гео-Бог 👑 (Ідеальна гра)';
+            else if (totalScore >= 20000) rankText = 'Професійний Мандрівник 🧭';
+            else if (totalScore >= 15000) rankText = 'Досвідчений Турист 🎒';
+            else if (totalScore >= 10000) rankText = 'Любитель пригод 🗺️';
+            else rankText = 'Заблукав з навігатором 📱';
+            document.getElementById('final-rank').innerText = rankText;
+
+            let historyHTML = '';
+            roundHistory.forEach((r, idx) => {
+                historyHTML +=
+                    `<div class="history-row">
+                        <span><span style="color:var(--text-muted); margin-right:10px;">Раунд ${idx + 1}</span> ${formatDist(r.distance)}</span>
+                        <span style="color:var(--success); font-weight:800;">${r.score}</span>
+                    </div>`;
+            });
+            document.getElementById('history-container').innerHTML = historyHTML;
+
+            document.getElementById('replay-btn').innerText = 'Грати ще раз';
+            document.getElementById('replay-btn').onclick = restartSameMapMode;
+        }
+
+        function restartSameMapMode() {
+            document.getElementById('end-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            resetGameVariables();
+            triggerNextRound();
+        }
+
+        function clearPrevState() {
+            document.getElementById('map-container').classList.remove('expanded');
+            if (resultMarker) resultMarker.setMap(null);
+            if (userMarker) userMarker.setMap(null);
+            if (polyline) polyline.setMap(null);
+            userMarker = null;
+            document.getElementById('guess-btn').style.display = 'block';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('score-display').innerText = '—';
+            if (mapGameMode !== 'custom') {
+                map.setCenter(MAPS_REGION_DATA[mapGameMode].center);
+                map.setZoom(MAPS_REGION_DATA[mapGameMode].zoom);
+            }
+            google.maps.event.trigger(map, 'resize');
+        }
+    </script>
+
+    <!-- Динамічне підключення Google Maps API через config.js -->
+    <script src="config.js"></script>
+    <script>
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=initMap&libraries=geometry`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    </script>
+
+</body>
+</html>
