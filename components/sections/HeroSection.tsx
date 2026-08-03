@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { HelpCircle, Download, FolderGit2, Mail } from 'lucide-react'
+import { HelpCircle, FileText, FolderGit2, Mail } from 'lucide-react'
 import { useLanguage } from '../providers/LanguageProvider'
 import { useAnimatedCounter } from '../../hooks/useAnimatedCounter'
 import { TECH_LIST, DB } from '../../data/db'
 import { ProfileCard } from './ProfileCard'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation';
 
 export const HeroSection = ({
 	splash,
@@ -17,6 +17,7 @@ export const HeroSection = ({
 }) => {
 	const { t } = useLanguage()
 	const [typedTitle, setTypedTitle] = useState('')
+	const router = useRouter();
 
 	useEffect(() => {
 		if (splash) return
@@ -77,9 +78,11 @@ export const HeroSection = ({
 					</span>
 				</div>
 				<div className='flex flex-wrap gap-3 self-start sm:self-auto'>
+					{/* Кнопка FAQ */}
 					<button
+						type='button'
 						onClick={onFaqClick}
-						className='group flex items-center gap-2 px-4 py-2.5 rounded-full border border-zinc-200 dark:border-zinc-700 hover:border-emerald-200 dark:hover:border-emerald-500 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 text-xs font-sans uppercase tracking-widest text-zinc-500 dark:text-zinc-400 hover:text-emerald-700 dark:hover:text-emerald-400 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm'
+						className='group flex items-center gap-2 px-4 py-2.5 rounded-full border border-zinc-200 dark:border-zinc-700 hover:border-emerald-200 dark:hover:border-emerald-500 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 text-xs font-sans uppercase tracking-widest text-zinc-500 dark:text-zinc-400 hover:text-emerald-700 dark:hover:text-emerald-400 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm cursor-pointer'
 					>
 						<HelpCircle
 							size={14}
@@ -87,13 +90,16 @@ export const HeroSection = ({
 						/>
 						<span>{t.faq}</span>
 					</button>
-					<Link
-						href='/cv'
-						className='group flex items-center gap-2 px-5 py-2.5 rounded-full border border-zinc-200 dark:border-zinc-700 hover:border-emerald-200 dark:hover:border-emerald-500 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 text-xs font-sans uppercase tracking-widest text-zinc-500 dark:text-zinc-400 hover:text-emerald-700 dark:hover:text-emerald-400 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm'
+
+					{/* Кнопка РЕЗЮМЕ (плавний SPA-перехід) */}
+					<button
+						type='button'
+						onClick={() => router.push('/cv')}
+						className='group flex items-center gap-2 px-5 py-2.5 rounded-full border border-zinc-200 dark:border-zinc-700 hover:border-emerald-200 dark:hover:border-emerald-500 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 text-xs font-sans uppercase tracking-widest text-zinc-500 dark:text-zinc-400 hover:text-emerald-700 dark:hover:text-emerald-400 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm cursor-pointer'
 					>
-						<Download size={14} className='group-hover:animate-bounce' />
+						<FileText size={14} className='group-hover:animate-bounce' />
 						<span>{t.resume}</span>
-					</Link>
+					</button>
 				</div>
 			</div>
 
