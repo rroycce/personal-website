@@ -45,6 +45,16 @@ export const BackgroundDots = ({ darkMode }: { darkMode: boolean }) => {
                     50% { background-position: 100% 50%; }
                     100% { background-position: 0% 50%; }
                 }
+                    /* НОВИЙ БЛОК - тільки для телефонів */
+                @media (max-width: 767px) {
+                    .diamond-grid-wrapper {
+                        --grid-size: 280px; /* Було 130px -> стане 280px (у 2 рази більше, менше повторів) */
+                    }
+                    .diamond-grid-wrapper::before {
+                        animation: none !important; 
+                        opacity: 0.3; 
+                    }
+                }
 
                 /* Для ПК та планшетів — розмір ромба 220px */
                 @media (min-width: 768px) {

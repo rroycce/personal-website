@@ -11,7 +11,6 @@ import {
 	CookieConsent,
 	BackToTopButton,
 	FAQModal,
-	CalculatorModal,
 	SplashCanvas,
 	BackgroundDots,
 	HeroSection,
@@ -25,7 +24,25 @@ import {
 
 // Груповий імпорт хукiв
 import { useScrollProgress, useRipples } from '@/hooks'
-
+import { memo } from 'react'
+import dynamic from 'next/dynamic'
+const CalculatorModal = dynamic(
+	() =>
+		import('@/components/modals/CalculatorModal').then(
+			mod => mod.CalculatorModal,
+		),
+	{ ssr: false },
+)
+const MemoBackgroundDots = memo(BackgroundDots)
+const ScrollProgressBar = () => {
+	const progress = useScrollProgress()
+	return (
+		<div
+			className='fixed top-0 left-0 h-1 bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 z-50 transition-all duration-150 ease-out'
+			style={{ width: `${progress * 100}%` }}
+		/>
+	)
+}
 export default function Home() {
 	const [splash, setSplash] = useState(false)
 	const [splashOpacity, setSplashOpacity] = useState(1)
@@ -69,10 +86,7 @@ export default function Home() {
 				<ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
 				<LangToggle />
 
-				<div
-					className='absolute top-0 left-0 h-1 bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 z-50 transition-all duration-150 ease-out'
-					style={{ width: `${scrollProgress * 100}%` }}
-				/>
+				<ScrollProgressBar />
 				<div className='mouse-glow hidden md:block' />
 				{ripples.map(r => (
 					<div
@@ -82,7 +96,7 @@ export default function Home() {
 						style={{ left: r.x, top: r.y }}
 					/>
 				))}
-				<BackgroundDots darkMode={darkMode} />
+				<MemoBackgroundDots darkMode={darkMode} />
 
 				{/* Верхній блок (Hero + TechMarquee) */}
 				<div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-8 md:pt-12 relative z-10'>

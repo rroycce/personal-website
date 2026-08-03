@@ -6,6 +6,9 @@ export const useRipples = () => {
 	>([])
 
 	const addRipple = (e: React.MouseEvent<HTMLElement>) => {
+		if (window.innerWidth < 768 || 'ontouchstart' in window) {
+			return
+		}
 		const id = Date.now()
 		setRipples(prev => [...prev, { x: e.clientX, y: e.clientY, id }])
 		setTimeout(() => {
