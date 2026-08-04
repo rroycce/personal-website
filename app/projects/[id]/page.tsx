@@ -24,9 +24,8 @@ export default function ProjectPage() {
 function ProjectPageContent() {
 	const { id } = useParams<{ id: string }>()
 
-	// Отримуємо поточну мову (використовуємо 'lang', бо ти так назвав змінну в хуку)
 	const { lang } = useLanguage()
-	const isEng = lang === 'en' // Допоміжна змінна для зручності
+	const isEng = lang === 'en'
 
 	const [darkMode, setDarkMode] = useState(false)
 	const [lightbox, setLightbox] = useState<string | null>(null)

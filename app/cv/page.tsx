@@ -220,7 +220,25 @@ export default function CVPage() {
 	const t = cvData[lang]
 
 	const handlePrint = () => {
-		window.print()
+		const iframe = document.createElement('iframe')
+		iframe.style.position = 'fixed'
+		iframe.style.right = '0'
+		iframe.style.bottom = '0'
+		iframe.style.width = '0'
+		iframe.style.height = '0'
+		iframe.style.border = '0'
+		iframe.src = '/cv.pdf'
+
+		document.body.appendChild(iframe)
+
+		iframe.onload = () => {
+			try {
+				iframe.contentWindow?.focus()
+				iframe.contentWindow?.print()
+			} catch (error) {
+				window.open('/cv.pdf', '_blank')
+			}
+		}
 	}
 
 	const toggleLanguage = () => {
