@@ -289,6 +289,50 @@ export const PROJECTS_DATA: Record<'ua' | 'en', ProjectData[]> = {
 			],
 			github: 'https://github.com/rroycce/portfolio',
 		},
+		{
+			id: 7,
+			year: '2026',
+			title: 'Wheel Lifter',
+			desc: 'Віртуальний примірювач дисків для авто. Завантажуєш фото машини збоку і фото диска — редактор на Fabric.js дозволяє точно вписати колесо в кадр (позиція, масштаб, кут), а вбудоване видалення фону прибирає задній план з фото диска в кілька кліків.',
+			tech: ['JavaScript', 'Fabric.js'],
+			category: 'AI та інструменти',
+			colorFrom: 'from-zinc-700',
+			colorTo: 'to-amber-500',
+			badgeBg: 'bg-amber-50',
+			badgeText: 'text-amber-700',
+			logo: '/projects/wheel-lifter/logo.png',
+			github: 'https://github.com/rroycce/whell_lifter',
+			hook: 'Приміряй нові диски на своє авто ще до покупки',
+			icon: '🛞',
+			hoverText: 'group-hover:text-amber-400',
+			badgeHover:
+				'hover:bg-amber-100 hover:shadow-[0_0_15px_rgba(217,119,6,0.2)]',
+			features: [
+				'Точне позиціювання диска на фото авто — перетягування, масштабування та обертання прямо на canvas (Fabric.js)',
+				'Видалення фону з фото диска в кілька кліків: масштабоване коло, "чарівна паличка" по кольору та ручна гумка для точних правок',
+				'Модалка кропу з живим прев’ю перед накладанням диска на авто',
+				'Порівняння "до/після" повзунком прямо на головному екрані',
+				'Кілька дисків одночасно та швидка заміна через drag&drop / URL / Ctrl+V',
+				'Повністю адаптивний редактор з окремим пультом керування для мобільних пристроїв',
+			],
+			gallery: [
+				{
+					caption:
+						'Головний екран — завантаження фото авто та диска, порівняння до/після повзунком.',
+					image: '/projects/wheel-lifter/upload.png',
+				},
+				{
+					caption:
+						'Модалка обрізки — підганяєш коло під диск, зайвий фон прибираєш чарівною паличкою або гумкою.',
+					image: '/projects/wheel-lifter/crop.png',
+				},
+				{
+					caption:
+						'Редактор — диск точно вписаний у фото авто, з можливістю рухати, масштабувати й додавати ще диски.',
+					image: '/projects/wheel-lifter/editor.png',
+				},
+			],
+		},
 	],
 	en: [
 		{
@@ -559,6 +603,50 @@ export const PROJECTS_DATA: Record<'ua' | 'en', ProjectData[]> = {
 				},
 			],
 			github: 'https://github.com/rroycce/portfolio',
+		},
+		{
+			id: 7,
+			year: '2026',
+			title: 'Wheel Lifter',
+			desc: 'A virtual wheel fitment tool for cars. Upload a side photo of the car and a photo of the wheel — a Fabric.js editor lets you precisely fit the wheel into the frame (position, scale, angle), while built-in background removal cleans up the wheel photo in a few clicks.',
+			tech: ['JavaScript', 'Fabric.js'],
+			category: 'AI & Tools',
+			colorFrom: 'from-zinc-700',
+			colorTo: 'to-amber-500',
+			badgeBg: 'bg-amber-50',
+			badgeText: 'text-amber-700',
+			logo: '/projects/wheel-lifter/logo.png',
+			github: 'https://github.com/rroycce/whell_lifter',
+			hook: 'Try new wheels on your car before you buy them',
+			icon: '🛞',
+			hoverText: 'group-hover:text-amber-400',
+			badgeHover:
+				'hover:bg-amber-100 hover:shadow-[0_0_15px_rgba(217,119,6,0.2)]',
+			features: [
+				'Precise wheel positioning on the car photo — drag, scale, and rotate right on the canvas (Fabric.js)',
+				'Background removal from the wheel photo in a few clicks: scalable circle, color-based magic wand, and a manual eraser',
+				'Crop modal with a live preview before compositing the wheel onto the car',
+				'Before/after comparison slider on the main screen',
+				'Add multiple wheels at once and quickly swap one via drag&drop / URL / Ctrl+V',
+				'Fully responsive editor with a dedicated on-screen control pad for mobile',
+			],
+			gallery: [
+				{
+					caption:
+						'Main screen — upload car and wheel photos, compare before/after with a slider.',
+					image: '/projects/wheel-lifter/upload.png',
+				},
+				{
+					caption:
+						'Crop modal — fit the circle to the wheel, clean up the background with the magic wand or eraser.',
+					image: '/projects/wheel-lifter/crop.png',
+				},
+				{
+					caption:
+						'Editor — the wheel precisely fitted onto the car photo, with options to move, scale, and add more wheels.',
+					image: '/projects/wheel-lifter/editor.png',
+				},
+			],
 		},
 	],
 }

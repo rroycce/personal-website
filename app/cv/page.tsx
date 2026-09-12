@@ -227,7 +227,7 @@ export default function CVPage() {
 		iframe.style.width = '0'
 		iframe.style.height = '0'
 		iframe.style.border = '0'
-		iframe.src = '/cv.pdf'
+		iframe.src = '/CV.pdf'
 
 		document.body.appendChild(iframe)
 
@@ -236,7 +236,7 @@ export default function CVPage() {
 				iframe.contentWindow?.focus()
 				iframe.contentWindow?.print()
 			} catch (error) {
-				window.open('/cv.pdf', '_blank')
+				window.open('/CV.pdf', '_blank')
 			}
 		}
 	}
@@ -367,7 +367,7 @@ export default function CVPage() {
 					{/* Кнопки завантаження / друку */}
 					<div className='flex flex-wrap gap-3 mt-6 print:hidden'>
 						<a
-							href='/cv.pdf'
+							href='/CV.pdf'
 							target='_blank'
 							rel='noopener noreferrer'
 							className='inline-flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-semibold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all shadow-md active:scale-95'
@@ -377,7 +377,7 @@ export default function CVPage() {
 						</a> 
 
 						<a
-							href='/cv.pdf'
+							href='/CV.pdf'
 							download='Roman_CV.pdf'
 							className='inline-flex items-center gap-2 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium text-xs uppercase tracking-wider px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 transition-all active:scale-95'
 						>
